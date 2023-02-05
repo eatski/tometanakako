@@ -9,6 +9,7 @@ export default function Home() {
   const [prompt, setPrompt] = useState<string>('');
   const [response, setResponse] = useState<string>('');
   const onClick = () => {
+    setResponse("送信中")
     fetch("/api/question",{
       method: "POST",
       body: JSON.stringify({prompt}),
@@ -28,8 +29,9 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <h1 className={styles.title}>
-          会話を楽しむ
+          クリスマスなのに
         </h1>
+        <p>ホゲホゲ町ではクリスマスの夜に残業するサラリーマンが多いという。なぜ？</p>
         <textarea onChange={e => {
           setPrompt(e.target.value)
         }} value={prompt}></textarea>
