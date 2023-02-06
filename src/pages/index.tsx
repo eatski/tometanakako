@@ -8,11 +8,23 @@ const inter = Inter({ subsets: ['latin'] })
 export default function Home() {
   const [prompt, setPrompt] = useState<string>('');
   const [response, setResponse] = useState<string>('');
-  const onClick = () => {
+  const [debugMode, setDebugMode] = useState<boolean>(false);
+  const sendQuestion = () => {
     setResponse("送信中")
     fetch("/api/question",{
       method: "POST",
-      body: JSON.stringify({prompt}),
+      body: JSON.stringify({prompt,debugMode}),
+    }).then(e => {
+      return e.json()
+    }).then(e => {
+      setResponse(e.answer)
+    })
+  }
+  const sendCorrectAnswer = () => {
+    setResponse("送信中")
+    fetch("/api/correct",{
+      method: "POST",
+      body: JSON.stringify({prompt,debugMode}),
     }).then(e => {
       return e.json()
     }).then(e => {
@@ -31,12 +43,21 @@ export default function Home() {
         <h1 className={styles.title}>
           クリスマスなのに
         </h1>
-        <p>ホゲホゲ町ではクリスマスの夜に残業するサラリーマンが多いという。なぜ？</p>
+        <p>ホゲホゲ町では町のとある施策によりクリスマスの夜に残業するサラリーマンが多いという。なぜ？</p>
         <textarea onChange={e => {
           setPrompt(e.target.value)
         }} value={prompt}></textarea>
         <p>{response}</p>
-        <button onClick={onClick}>送信</button>
+        <div style={{display:"flex",gap: "4px"}}>
+          <button onClick={sendQuestion}>送信</button>
+          <button onClick={sendCorrectAnswer}>正解を送信</button>
+          <label>
+            デバッグモード
+            <input type="checkbox" onChange={e => {
+            setDebugMode(e.target.checked);
+          }}></input>
+          </label>
+        </div>
       </main>
     </>
   )
