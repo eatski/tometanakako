@@ -12,7 +12,7 @@ const handler : NextApiHandler = async (req, res) => {
     const body = JSON.parse(req.body);
     const prompt = `
     以下の2つの文章があります。
-    A:${story01.description}
+    A:${story01.coreDescription}
     B:${body.prompt}
 
     Bに対するAの説明として「ほとんど同じ意味である」「関係ない」「説明不足である」のから選ぶ。

@@ -10,7 +10,8 @@ const openai = new OpenAIApi(configuration);
 const handler : NextApiHandler = async (req, res) => {
     const body = JSON.parse(req.body);
     const prompt = `
-    『${story01.description}』
+    『${story01.coreDescription}
+    ${story01.additinalDescription || ""}』
     『』内の物語について質問するので、その質問に「はい」か「いいえ」、もしくは物語から読み取れないことは「答えられない」で答えてください。
     ${body.debugMode ? "その理由も答えてください。" :  "「はい」「いいえ」「答えられない」以外に余計なことは言わないでください。"}
     Q:${body.prompt}
