@@ -34,7 +34,8 @@ const handler : NextApiHandler = async (req, res) => {
             res.status(500).json("OpenAI API Error")
         }
        
-    }).catch(() => {
+    }).catch((e) => {
+        console.error(e);
         res.status(500).json({error: "OpenAI API Error"})
     })
 }
