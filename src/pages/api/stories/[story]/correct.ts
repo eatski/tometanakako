@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { getStory } from '@/models/getStory';
 import type { NextApiHandler } from 'next'
 import { Configuration, OpenAIApi } from "openai";
-import {story01} from "../../stories"
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -9,10 +9,14 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const handler : NextApiHandler = async (req, res) => {
+    if(!(typeof req.query.story === "string")){
+        throw new Error("Invalid query")
+    };
+    const story = await getStory(req.query.story);
     const body = JSON.parse(req.body);
     const prompt = `
     以下の2つの文章があります。
-    A:${story01.coreDescription}
+    A:${story.coreDescription}
     B:${body.prompt}
 
     Bに対するAの説明として「ほとんど同じ意味である」「関係ない」「説明不足である」のから選ぶ。

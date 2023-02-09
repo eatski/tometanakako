@@ -1,17 +1,21 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { story01 } from '@/stories';
+import { getStory } from '@/models/getStory';
 import type { NextApiHandler } from 'next'
 import { Configuration, OpenAIApi } from "openai";
+
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
 const handler : NextApiHandler = async (req, res) => {
+    if(!(typeof req.query.story === "string")){
+        throw new Error("Invalid query")
+    };
+    const story = await getStory(req.query.story);
     const body = JSON.parse(req.body);
     const prompt = `
-    『${story01.coreDescription}
-    ${story01.additinalDescription || ""}』
+    『${story.coreDescription}
+    ${story.additionalDescription || ""}』
     『』内の物語について質問するので、その質問に「はい」か「いいえ」、もしくは物語から読み取れないことは「答えられない」で答えてください。
     ${body.debugMode ? "その理由も答えてください。" :  "「はい」「いいえ」「答えられない」以外に余計なことは言わないでください。"}
     Q:${body.prompt}
