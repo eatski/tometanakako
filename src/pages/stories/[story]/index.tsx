@@ -68,7 +68,7 @@ export default function Home(props: Props) {
         }} value={prompt}></textarea>
         <p>{response}</p>
         <div style={{display:"flex",gap: "4px"}}>
-          <button onClick={sendQuestion}>送信</button>
+          <button onClick={sendQuestion}>質問を送信</button>
           <button onClick={sendCorrectAnswer}>正解を送信</button>
           <label>
             デバッグモード

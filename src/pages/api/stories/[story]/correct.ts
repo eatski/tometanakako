@@ -15,13 +15,27 @@ const handler : NextApiHandler = async (req, res) => {
     const story = await getStory(req.query.story);
     const body = JSON.parse(req.body);
     const prompt = `
-    以下の2つの文章があります。
-    A:${story.coreDescription}
-    B:${body.prompt}
+# 概要
+問題とそれの答え、及びそれを読んだ回答者の回答を見て出力を決めてください。
 
-    Bに対するAの説明として「ほとんど同じ意味である」「関係ない」「説明不足である」のから選ぶ。
-    ${body.debugMode ? "その理由も共に答える" :  ""}
-    `
+# 問題
+${story.question}
+
+# 問題の答え
+${story.coreDescription}
+
+# 回答者の回答
+${body.prompt}
+
+# 選択肢
+- 正解: 「回答者の回答」は「問題の答え」を正しく表しており、要素を欠落していない。
+- 説明不足: 「回答者の回答」は「問題の答え」を正しく表してはいるが、一部要素を欠落している。
+- 不正解: 「回答者の回答」は「問題の答え」を正しく表していない。
+
+# 出力
+「問題の答え」に対する「回答者の回答」について、選択肢から1つ選び、それのみを出力する。
+${body.debugMode ? "その理由も共に答える" :  ""}
+ `
     await openai.createCompletion({
         model: "text-davinci-003",
         prompt,
