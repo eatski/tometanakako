@@ -14,12 +14,31 @@ const handler : NextApiHandler = async (req, res) => {
     const story = await getStory(req.query.story);
     const body = JSON.parse(req.body);
     const prompt = `
-    『${story.coreDescription}
-    ${story.additionalDescription || ""}』
-    『』内の物語について質問するので、その質問に「はい」か「いいえ」、もしくは物語から読み取れないことは「答えられない」で答えてください。
-    ${body.debugMode ? "その理由も答えてください。" :  "「はい」「いいえ」「答えられない」以外に余計なことは言わないでください。"}
-    Q:${body.prompt}
-    A:`
+# 概要
+問題とそれの答え、及びそれを読んだ回答者の質問を見て選択肢の中から出力を決めてください。
+ある程度抽象的に考えてください。
+
+# 問題
+${story.question}
+
+# 問題の答え
+${story.coreDescription}
+
+# 補足説明
+${story.additionalDescription}
+
+# 回答者の質問
+${body.prompt}
+
+# 選択肢
+- はい: 「回答者の質問」に対して「問題の答え」の状況は真である
+- いいえ: 「回答者の質問」に対して「問題の答え」の状況は偽である
+- 関係ない: 「回答者の回答」は「問題の答え」に対して関係ないもしくは読み取れないことを言っている。
+
+# 出力
+「問題の答え」を読んだ上で「回答者の質問」について、選択肢から1つ選び、それのみを回答する。
+${body.debugMode ? "その理由も共に答える" :  ""}
+`
     await openai.createCompletion({
         model: "text-davinci-003",
         prompt,
